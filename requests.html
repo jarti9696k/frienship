@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Friend Requests | Friendship</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .requests-page {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .requests-header {
+            margin-bottom: 25px;
+        }
+
+        .requests-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #222;
+        }
+
+        .requests-header p {
+            color: #777;
+        }
+
+        .flash-message {
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: #eef2ff;
+            color: #4f46e5;
+        }
+
+        .request-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .request-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .request-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            min-width: 0;
+        }
+
+        .request-avatar,
+        .request-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .request-avatar {
+            background: #4f46e5;
+            color: white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .request-photo {
+            object-fit: cover;
+        }
+
+        .request-info h2 {
+            margin-bottom: 5px;
+            font-size: 20px;
+            color: #222;
+        }
+
+        .request-info h2 a {
+            color: #222;
+            text-decoration: none;
+        }
+
+        .request-info h2 a:hover {
+            color: #4f46e5;
+        }
+
+        .request-info p {
+            margin: 4px 0;
+            color: #777;
+            font-size: 14px;
+        }
+
+        .request-interests {
+            color: #555 !important;
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .accept-btn,
+        .reject-btn {
+            display: inline-block;
+            padding: 10px 17px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .accept-btn {
+            background: #16a34a;
+            color: white !important;
+        }
+
+        .accept-btn:hover {
+            background: #15803d;
+        }
+
+        .reject-btn {
+            background: #fee2e2;
+            color: #dc2626 !important;
+        }
+
+        .reject-btn:hover {
+            background: #fecaca;
+        }
+
+        .empty-requests {
+            background: white;
+            padding: 50px 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .empty-requests h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .empty-requests p {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-btn {
+            display: inline-block;
+            padding: 11px 18px;
+            background: #4f46e5;
+            color: white !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .dashboard-btn:hover {
+            background: #4338ca;
+        }
+
+        .request-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-width: 28px;
+            height: 28px;
+            padding: 0 8px;
+
+            margin-left: 8px;
+
+            background: #4f46e5;
+            color: white;
+
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 700px) {
+
+            .requests-page {
+                margin: 25px auto;
+                padding: 0 12px;
+            }
+
+            .request-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .request-user {
+                width: 100%;
+            }
+
+            .request-actions {
+                width: 100%;
+            }
+
+            .accept-btn,
+            .reject-btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .request-avatar,
+            .request-photo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .request-info h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav>
+
+        <h2>Friendship</h2>
+
+        <div>
+
+            <a href="{{ url_for('dashboard') }}">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('friends') }}">
+                Friends
+            </a>
+
+            <a href="{{ url_for('requests') }}">
+                Requests
+            </a>
+
+            <a href="{{ url_for('profile', user_id=session['user_id']) }}">
+                Profile
+            </a>
+
+            <a href="{{ url_for('logout') }}">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ================= REQUESTS PAGE ================= -->
+
+    <div class="requests-page">
+
+        <div class="requests-header">
+
+            <h1>
+                Friend Requests
+
+                {% if requests %}
+                    <span class="request-count">
+                        {{ requests|length }}
+                    </span>
+                {% endif %}
+
+            </h1>
+
+            <p>
+                People who want to connect with you.
+            </p>
+
+        </div>
+
+
+        <!-- ================= FLASH MESSAGES ================= -->
+
+        {% with messages = get_flashed_messages() %}
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="flash-message">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- ================= REQUEST LIST ================= -->
+
+        {% if requests %}
+
+            <div class="request-list">
+
+                {% for request_item in requests %}
+
+                    <div class="request-card">
+
+
+                        <!-- USER INFORMATION -->
+
+                        <div class="request-user">
+
+                            {% if request_item.profile_photo %}
+
+                                <img
+                                    src="{{ url_for(
+                                        'static',
+                                        filename='uploads/' + request_item.profile_photo
+                                    ) }}"
+                                    alt="{{ request_item.name }}"
+                                    class="request-photo"
+                                >
+
+                            {% else %}
+
+                                <div class="request-avatar">
+                                    {{ request_item.name[0]|upper }}
+                                </div>
+
+                            {% endif %}
+
+
+                            <div class="request-info">
+
+                                <h2>
+
+                                    <a href="{{ url_for(
+                                        'profile',
+                                        user_id=request_item.id
+                                    ) }}">
+
+                                        {{ request_item.name }}
+
+                                    </a>
+
+                                </h2>
+
+
+                                {% if request_item.age %}
+
+                                    <p>
+                                        🎂 {{ request_item.age }} years old
+                                    </p>
+
+                                {% endif %}
+
+
+                                {% if request_item.gender %}
+
+                                    <p>
+                                        👤 {{ request_item.gender }}
+                                    </p>
+
+                                {% endif %}
+
+
+                                {% if request_item.city %}
+
+                                    <p>
+                                        📍 {{ request_item.city }}
+                                    </p>
+
+                                {% endif %}
+
+
+                                {% if request_item.interests %}
+
+                                    <p class="request-interests">
+                                        ❤️ {{ request_item.interests }}
+                                    </p>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ================= ACTIONS ================= -->
+
+                        <div class="request-actions">
+
+                            <a
+                                href="{{ url_for(
+                                    'accept_request',
+                                    request_id=request_item.request_id
+                                ) }}"
+                                class="accept-btn"
+                                data-confirm="Accept this friend request?"
+                            >
+                                ✓ Accept
+                            </a>
+
+
+                            <a
+                                href="{{ url_for(
+                                    'reject_request',
+                                    request_id=request_item.request_id
+                                ) }}"
+                                class="reject-btn"
+                                data-confirm="Reject this friend request?"
+                            >
+                                ✕ Reject
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- ================= NO REQUESTS ================= -->
+
+            <div class="empty-requests">
+
+                <div class="empty-icon">
+                    🤝
+                </div>
+
+                <h2>
+                    No Friend Requests
+                </h2>
+
+                <p>
+                    You don't have any pending friend requests right now.
+                </p>
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="dashboard-btn"
+                >
+                    Find People
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>

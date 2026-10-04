@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Friends | Friendship Website</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .friends-page {
+            padding: 40px 7%;
+        }
+
+        .friends-header {
+            margin-bottom: 30px;
+        }
+
+        .friends-header h1 {
+            margin-bottom: 8px;
+        }
+
+        .friends-header p {
+            color: #666;
+        }
+
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .friend-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .friend-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .friend-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        .friend-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #4f46e5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .friend-card h2 {
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .friend-info {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .friend-interests {
+            color: #4f46e5;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .friend-bio {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        .friend-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .friend-actions a {
+            text-decoration: none;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .view-btn {
+            background: #eef2ff;
+            color: #4f46e5 !important;
+        }
+
+        .chat-btn {
+            background: #4f46e5;
+            color: white !important;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #dc2626 !important;
+        }
+
+        .view-btn:hover {
+            background: #e0e7ff;
+        }
+
+        .chat-btn:hover {
+            background: #4338ca;
+        }
+
+        .remove-btn:hover {
+            background: #fecaca;
+        }
+
+        .empty-friends {
+            background: white;
+            padding: 60px 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .empty-friends h2 {
+            margin-bottom: 10px;
+        }
+
+        .empty-friends p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .find-btn {
+            display: inline-block;
+            background: #4f46e5;
+            color: white !important;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+        }
+
+        .flash-message {
+            margin: 20px auto;
+            max-width: 700px;
+            padding: 12px 18px;
+            background: #eef2ff;
+            color: #3730a3;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .friends-page {
+                padding: 25px 5%;
+            }
+
+            .friends-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+    <h2>Friendship</h2>
+
+    <div>
+        <a href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('friends') }}">
+            Friends
+        </a>
+
+        <a href="{{ url_for('requests') }}">
+            Requests
+        </a>
+
+        <a href="{{ url_for('profile', user_id=session['user_id']) }}">
+            Profile
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+    </div>
+</nav>
+
+
+<!-- ================= FLASH MESSAGES ================= -->
+
+{% with messages = get_flashed_messages() %}
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="flash-message">
+                {{ message }}
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+{% endwith %}
+
+
+<!-- ================= FRIENDS PAGE ================= -->
+
+<div class="friends-page">
+
+    <div class="friends-header">
+
+        <h1>My Friends 👥</h1>
+
+        <p>
+            People you are connected with.
+        </p>
+
+    </div>
+
+
+    {% if friends %}
+
+        <div class="friends-grid">
+
+            {% for friend in friends %}
+
+                <div class="friend-card">
+
+                    <!-- Profile Photo -->
+
+                    {% if friend.profile_photo %}
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='uploads/' + friend.profile_photo
+                            ) }}"
+                            alt="{{ friend.name }}"
+                            class="friend-photo"
+                        >
+
+                    {% else %}
+
+                        <div class="friend-avatar">
+                            {{ friend.name[0]|upper }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Name -->
+
+                    <h2>
+                        {{ friend.name }}
+                    </h2>
+
+
+                    <!-- Information -->
+
+                    <div class="friend-info">
+
+                        {% if friend.age %}
+                            <div>
+                                🎂 Age: {{ friend.age }}
+                            </div>
+                        {% endif %}
+
+                        {% if friend.gender %}
+                            <div>
+                                👤 {{ friend.gender }}
+                            </div>
+                        {% endif %}
+
+                        {% if friend.city %}
+                            <div>
+                                📍 {{ friend.city }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Interests -->
+
+                    {% if friend.interests %}
+
+                        <div class="friend-interests">
+                            ❤️ {{ friend.interests }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Bio -->
+
+                    {% if friend.bio %}
+
+                        <div class="friend-bio">
+
+                            {{ friend.bio[:100] }}
+
+                            {% if friend.bio|length > 100 %}
+                                ...
+                            {% endif %}
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- Actions -->
+
+                    <div class="friend-actions">
+
+                        <a
+                            href="{{ url_for(
+                                'profile',
+                                user_id=friend.id
+                            ) }}"
+                            class="view-btn"
+                        >
+                            View Profile
+                        </a>
+
+
+                        <a
+                            href="{{ url_for(
+                                'chat',
+                                user_id=friend.id
+                            ) }}"
+                            class="chat-btn"
+                        >
+                            💬 Chat
+                        </a>
+
+
+                        <a
+                            href="{{ url_for(
+                                'remove_friend',
+                                user_id=friend.id
+                            ) }}"
+                            class="remove-btn"
+                            data-confirm="Are you sure you want to remove {{ friend.name }} from your friends?"
+                        >
+                            Remove
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% else %}
+
+        <!-- No Friends -->
+
+        <div class="empty-friends">
+
+            <h2>
+                You don't have any friends yet. 🤝
+            </h2>
+
+            <p>
+                Go to the dashboard and find people to connect with.
+            </p>
+
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="find-btn"
+            >
+                Find Friends
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

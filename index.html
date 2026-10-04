@@ -1,0 +1,1896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Friendship | Make New Friends</title>
+
+
+    <!-- Main CSS -->
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+
+
+    <style>
+
+        /* ==================================================
+           HOME PAGE
+        ================================================== */
+
+        .home-page {
+            overflow: hidden;
+            background: #fafaff;
+        }
+
+
+        /* ==================================================
+           HERO SECTION
+        ================================================== */
+
+        .hero {
+            min-height: calc(100vh - 72px);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 70px;
+
+            padding: 80px 7%;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 10% 20%,
+                    rgba(108, 77, 246, 0.18),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 80%,
+                    rgba(236, 72, 153, 0.18),
+                    transparent 30%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #f5f3ff,
+                    #ffffff,
+                    #fdf2f8
+                );
+        }
+
+
+        /* ==================================================
+           HERO BACKGROUND CIRCLES
+        ================================================== */
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(139, 92, 246, 0.08);
+
+            filter: blur(5px);
+
+            top: -120px;
+            right: 20%;
+
+            animation:
+                floatingCircle 7s ease-in-out infinite;
+        }
+
+
+        .hero::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 220px;
+            height: 220px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(236, 72, 153, 0.08);
+
+            bottom: -90px;
+            left: 15%;
+
+            animation:
+                floatingCircleReverse 8s ease-in-out infinite;
+        }
+
+
+
+        /* ==================================================
+           HERO CONTENT
+        ================================================== */
+
+        .hero-content {
+
+            flex: 1;
+
+            position: relative;
+
+            z-index: 5;
+
+            animation:
+                heroTextAnimation
+                0.9s
+                ease
+                both;
+        }
+
+
+        .hero-badge {
+
+            display: inline-block;
+
+            padding: 8px 17px;
+
+            margin-bottom: 20px;
+
+            border-radius: 50px;
+
+            background:
+                rgba(108, 77, 246, 0.08);
+
+            border:
+                1px solid
+                rgba(108, 77, 246, 0.15);
+
+            color: #6c4df6;
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+
+        .hero-content h1 {
+
+            font-size:
+                clamp(45px, 6vw, 70px);
+
+            line-height: 1.08;
+
+            font-weight: 850;
+
+            margin-bottom: 22px;
+
+            color: #1f2937;
+        }
+
+
+        .hero-content h1 span {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #9333ea,
+                    #ec4899
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+        }
+
+
+        .hero-content p {
+
+            max-width: 650px;
+
+            font-size: 19px;
+
+            line-height: 1.8;
+
+            color: #667085;
+
+            margin-bottom: 32px;
+        }
+
+
+
+        /* ==================================================
+           HERO BUTTONS
+        ================================================== */
+
+        .hero-buttons {
+
+            display: flex;
+
+            gap: 14px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .hero-buttons a {
+
+            text-decoration: none;
+
+            padding: 14px 27px;
+
+            border-radius: 12px;
+
+            font-weight: 700;
+
+            display: inline-block;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .register-btn {
+
+            color: white !important;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6c4df6,
+                    #ec4899
+                );
+
+            box-shadow:
+                0 10px 25px
+                rgba(108, 77, 246, 0.25);
+        }
+
+
+        .register-btn:hover {
+
+            transform:
+                translateY(-4px);
+
+            box-shadow:
+                0 15px 35px
+                rgba(108, 77, 246, 0.35);
+        }
+
+
+        .login-btn {
+
+            background: white;
+
+            color: #6c4df6 !important;
+
+            border:
+                1px solid
+                #ddd6fe;
+        }
+
+
+        .login-btn:hover {
+
+            transform:
+                translateY(-4px);
+
+            background: #f5f3ff;
+
+            box-shadow:
+                0 10px 20px
+                rgba(108, 77, 246, 0.10);
+        }
+
+
+
+        /* ==================================================
+           HERO ILLUSTRATION
+        ================================================== */
+
+        .hero-illustration {
+
+            flex: 1;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            position: relative;
+
+            z-index: 5;
+
+            animation:
+                illustrationAnimation
+                1s
+                ease
+                both;
+        }
+
+
+        /* ==================================================
+           PEOPLE CARD
+        ================================================== */
+
+        .people-card {
+
+            width: 410px;
+
+            max-width: 100%;
+
+            padding: 42px 30px;
+
+            text-align: center;
+
+            position: relative;
+
+            border-radius: 30px;
+
+            background:
+                rgba(255, 255, 255, 0.78);
+
+            backdrop-filter:
+                blur(20px);
+
+            -webkit-backdrop-filter:
+                blur(20px);
+
+            border:
+                1px solid
+                rgba(255, 255, 255, 0.9);
+
+            box-shadow:
+                0 25px 70px
+                rgba(79, 70, 229, 0.18);
+
+            animation:
+                cardFloating
+                4s
+                ease-in-out
+                infinite;
+        }
+
+
+        /* Card glow */
+
+        .people-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 120px;
+            height: 120px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(139, 92, 246, 0.18);
+
+            filter: blur(30px);
+
+            top: -30px;
+            left: -30px;
+
+            z-index: -1;
+        }
+
+
+        .people-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 120px;
+            height: 120px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(236, 72, 153, 0.18);
+
+            filter: blur(30px);
+
+            bottom: -30px;
+            right: -30px;
+
+            z-index: -1;
+        }
+
+
+
+        /* ==================================================
+           PEOPLE / FRIENDSHIP SYMBOL
+        ================================================== */
+
+        .people-icons {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 18px;
+
+            margin-bottom: 28px;
+        }
+
+
+        .person {
+
+            width: 78px;
+            height: 78px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            color: white;
+
+            font-size: 30px;
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6c4df6,
+                    #9333ea
+                );
+
+            border:
+                4px solid white;
+
+            box-shadow:
+                0 10px 25px
+                rgba(108, 77, 246, 0.25);
+
+            animation:
+                personMoveLeft
+                3s
+                ease-in-out
+                infinite;
+        }
+
+
+        /* ==================================================
+           FRIENDSHIP SYMBOL
+        ================================================== */
+
+        .person.friendship-symbol {
+
+            width: 105px;
+            height: 105px;
+
+            font-size: 45px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #6c4df6,
+                    #ec4899
+                );
+
+            box-shadow:
+                0 12px 30px
+                rgba(236, 72, 153, 0.28);
+
+            animation:
+                friendshipPulse
+                1.6s
+                ease-in-out
+                infinite;
+
+            z-index: 3;
+        }
+
+
+        /* B */
+
+        .person.person-b {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #9333ea,
+                    #ec4899
+                );
+
+            animation:
+                personMoveRight
+                3s
+                ease-in-out
+                infinite;
+        }
+
+
+
+        /* ==================================================
+           CONNECTION LINES
+        ================================================== */
+
+        .connection-line {
+
+            width: 35px;
+
+            height: 3px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6c4df6,
+                    #ec4899
+                );
+
+            opacity: 0.5;
+
+            animation:
+                linePulse
+                1.5s
+                ease-in-out
+                infinite;
+        }
+
+
+
+        /* ==================================================
+           PEOPLE CARD TEXT
+        ================================================== */
+
+        .people-card h2 {
+
+            font-size: 28px;
+
+            margin-bottom: 10px;
+
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #ec4899
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+        }
+
+
+        .people-card p {
+
+            color: #6b7280;
+
+            line-height: 1.7;
+
+            font-size: 15px;
+
+            max-width: 320px;
+
+            margin:
+                0 auto;
+        }
+
+
+
+        /* ==================================================
+           SMALL CARD BADGE
+        ================================================== */
+
+        .connection-badge {
+
+            display: inline-block;
+
+            margin-top: 22px;
+
+            padding: 7px 14px;
+
+            border-radius: 50px;
+
+            background:
+                #f3e8ff;
+
+            color:
+                #7e22ce;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+
+        /* ==================================================
+           FEATURES
+        ================================================== */
+
+        .features {
+
+            padding:
+                100px 7%;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #ffffff,
+                    #f8f7ff
+                );
+        }
+
+
+        .section-title {
+
+            max-width: 700px;
+
+            margin:
+                0 auto 50px;
+        }
+
+
+        .section-badge {
+
+            display: inline-block;
+
+            padding: 7px 15px;
+
+            margin-bottom: 14px;
+
+            border-radius: 50px;
+
+            background:
+                #f3e8ff;
+
+            color:
+                #7e22ce;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .section-title h2 {
+
+            font-size: 42px;
+
+            font-weight: 850;
+
+            margin-bottom: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #9333ea,
+                    #ec4899
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+            background-clip: text;
+        }
+
+
+        .section-title p {
+
+            color: #6b7280;
+
+            font-size: 17px;
+        }
+
+
+
+        /* ==================================================
+           FEATURE GRID
+        ================================================== */
+
+        .feature-grid {
+
+            max-width: 1100px;
+
+            margin: auto;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 25px;
+        }
+
+
+        .feature-card {
+
+            position: relative;
+
+            padding: 35px 25px;
+
+            background:
+                rgba(255, 255, 255, 0.95);
+
+            border-radius: 22px;
+
+            border:
+                1px solid
+                rgba(229, 231, 235, 0.8);
+
+            box-shadow:
+                0 8px 25px
+                rgba(79, 70, 229, 0.07);
+
+            overflow: hidden;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .feature-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 4px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6c4df6,
+                    #ec4899
+                );
+        }
+
+
+        .feature-card:hover {
+
+            transform:
+                translateY(-10px);
+
+            box-shadow:
+                0 20px 45px
+                rgba(79, 70, 229, 0.15);
+        }
+
+
+        .feature-icon {
+
+            width: 75px;
+            height: 75px;
+
+            margin:
+                0 auto 20px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 35px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ede9fe,
+                    #fce7f3
+                );
+
+            box-shadow:
+                0 8px 20px
+                rgba(108, 77, 246, 0.10);
+
+            transition:
+                transform 0.3s ease;
+        }
+
+
+        .feature-card:hover
+        .feature-icon {
+
+            transform:
+                scale(1.12)
+                rotate(-4deg);
+        }
+
+
+        .feature-card h3 {
+
+            font-size: 20px;
+
+            margin-bottom: 10px;
+
+            color: #1f2937;
+        }
+
+
+        .feature-card p {
+
+            color: #6b7280;
+
+            line-height: 1.7;
+
+            font-size: 14px;
+        }
+
+
+
+        /* ==================================================
+           CTA
+        ================================================== */
+
+        .cta {
+
+            padding:
+                90px 7%;
+
+            text-align: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #4f46e5,
+                    #7c3aed,
+                    #ec4899
+                );
+
+            color: white;
+        }
+
+
+        .cta::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 250px;
+            height: 250px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,0.10);
+
+            top: -120px;
+            left: 10%;
+
+            animation:
+                floatingCircle
+                6s
+                ease-in-out
+                infinite;
+        }
+
+
+        .cta::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 200px;
+            height: 200px;
+
+            border-radius: 50%;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            bottom: -100px;
+            right: 10%;
+
+            animation:
+                floatingCircleReverse
+                7s
+                ease-in-out
+                infinite;
+        }
+
+
+        .cta-content {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .cta h2 {
+
+            font-size: 40px;
+
+            margin-bottom: 12px;
+
+            font-weight: 850;
+        }
+
+
+        .cta p {
+
+            color:
+                rgba(255,255,255,0.85);
+
+            margin-bottom: 28px;
+
+            font-size: 17px;
+        }
+
+
+        .cta a {
+
+            display: inline-block;
+
+            text-decoration: none;
+
+            background: white;
+
+            color:
+                #6c4df6 !important;
+
+            padding:
+                14px 28px;
+
+            border-radius: 12px;
+
+            font-weight: 800;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+        }
+
+
+        .cta a:hover {
+
+            transform:
+                translateY(-4px)
+                scale(1.03);
+
+            box-shadow:
+                0 12px 30px
+                rgba(0,0,0,0.18);
+        }
+
+
+
+        /* ==================================================
+           FOOTER
+        ================================================== */
+
+        footer {
+
+            background:
+                #111827;
+
+            color: white;
+
+            text-align: center;
+
+            padding:
+                30px 20px;
+        }
+
+
+        footer p {
+
+            color:
+                #9ca3af;
+
+            font-size: 14px;
+        }
+
+
+
+        /* ==================================================
+           ANIMATIONS
+        ================================================== */
+
+        @keyframes heroTextAnimation {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateX(-40px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateX(0);
+            }
+        }
+
+
+        @keyframes illustrationAnimation {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateX(40px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateX(0);
+            }
+        }
+
+
+        @keyframes cardFloating {
+
+            0% {
+
+                transform:
+                    translateY(0);
+            }
+
+            50% {
+
+                transform:
+                    translateY(-10px);
+            }
+
+            100% {
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        @keyframes personMoveLeft {
+
+            0% {
+
+                transform:
+                    translateX(0);
+            }
+
+            50% {
+
+                transform:
+                    translateX(-10px);
+            }
+
+            100% {
+
+                transform:
+                    translateX(0);
+            }
+        }
+
+
+        @keyframes personMoveRight {
+
+            0% {
+
+                transform:
+                    translateX(0);
+            }
+
+            50% {
+
+                transform:
+                    translateX(10px);
+            }
+
+            100% {
+
+                transform:
+                    translateX(0);
+            }
+        }
+
+
+        @keyframes friendshipPulse {
+
+            0% {
+
+                transform:
+                    scale(1);
+            }
+
+            25% {
+
+                transform:
+                    scale(1.12);
+            }
+
+            50% {
+
+                transform:
+                    scale(1);
+            }
+
+            75% {
+
+                transform:
+                    scale(1.08);
+            }
+
+            100% {
+
+                transform:
+                    scale(1);
+            }
+        }
+
+
+        @keyframes linePulse {
+
+            0% {
+
+                opacity:
+                    0.3;
+            }
+
+            50% {
+
+                opacity:
+                    1;
+            }
+
+            100% {
+
+                opacity:
+                    0.3;
+            }
+        }
+
+
+        @keyframes floatingCircle {
+
+            0% {
+
+                transform:
+                    translate(0, 0);
+            }
+
+            50% {
+
+                transform:
+                    translate(35px, 25px);
+            }
+
+            100% {
+
+                transform:
+                    translate(0, 0);
+            }
+        }
+
+
+        @keyframes floatingCircleReverse {
+
+            0% {
+
+                transform:
+                    translate(0, 0);
+            }
+
+            50% {
+
+                transform:
+                    translate(-30px, -20px);
+            }
+
+            100% {
+
+                transform:
+                    translate(0, 0);
+            }
+        }
+
+
+
+        /* ==================================================
+           TABLET
+        ================================================== */
+
+        @media (max-width: 900px) {
+
+            .hero {
+
+                flex-direction: column;
+
+                text-align: center;
+
+                padding:
+                    70px 5%;
+            }
+
+
+            .hero-content p {
+
+                margin-left:
+                    auto;
+
+                margin-right:
+                    auto;
+            }
+
+
+            .hero-buttons {
+
+                justify-content:
+                    center;
+            }
+
+
+            .hero-illustration {
+
+                width: 100%;
+            }
+
+
+            .feature-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .section-title h2 {
+
+                font-size:
+                    35px;
+            }
+        }
+
+
+
+        /* ==================================================
+           MOBILE
+        ================================================== */
+
+        @media (max-width: 550px) {
+
+            .hero {
+
+                padding:
+                    55px 5%;
+            }
+
+
+            .hero-content h1 {
+
+                font-size:
+                    40px;
+            }
+
+
+            .hero-content p {
+
+                font-size:
+                    16px;
+            }
+
+
+            .hero-badge {
+
+                font-size:
+                    11px;
+            }
+
+
+            .people-card {
+
+                width:
+                    340px;
+
+                padding:
+                    32px 18px;
+            }
+
+
+            .people-icons {
+
+                gap:
+                    8px;
+            }
+
+
+            .person {
+
+                width:
+                    62px;
+
+                height:
+                    62px;
+
+                font-size:
+                    24px;
+            }
+
+
+            .person.friendship-symbol {
+
+                width:
+                    82px;
+
+                height:
+                    82px;
+
+                font-size:
+                    35px;
+            }
+
+
+            .connection-line {
+
+                width:
+                    20px;
+            }
+
+
+            .people-card h2 {
+
+                font-size:
+                    24px;
+            }
+
+
+            .people-card p {
+
+                font-size:
+                    14px;
+            }
+
+
+            .feature-grid {
+
+                grid-template-columns:
+                    1fr;
+            }
+
+
+            .features {
+
+                padding:
+                    70px 5%;
+            }
+
+
+            .section-title h2 {
+
+                font-size:
+                    30px;
+            }
+
+
+            .cta {
+
+                padding:
+                    70px 5%;
+            }
+
+
+            .cta h2 {
+
+                font-size:
+                    30px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+
+<body>
+
+
+<!-- ==================================================
+     NAVBAR
+================================================== -->
+
+<nav>
+
+    <h2>
+        Friendship
+    </h2>
+
+
+    <div>
+
+        <a href="{{ url_for('home') }}">
+            Home
+        </a>
+
+
+        <a href="{{ url_for('login') }}">
+            Login
+        </a>
+
+
+        <a
+            href="{{ url_for('register') }}"
+            class="btn"
+        >
+            Register
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ==================================================
+     HOME PAGE
+================================================== -->
+
+<div class="home-page">
+
+
+
+    <!-- ==================================================
+         HERO
+    ================================================== -->
+
+    <section class="hero">
+
+
+        <!-- LEFT CONTENT -->
+
+        <div class="hero-content">
+
+
+            <div class="hero-badge">
+
+                💜 Connect • Discover • Belong
+
+            </div>
+
+
+            <h1>
+
+                Make New
+                <span>Friends.</span>
+
+            </h1>
+
+
+            <p>
+
+                Connect with people who share your interests,
+                discover new friendships, and build meaningful
+                connections in a friendly community.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+
+                <a
+                    href="{{ url_for('register') }}"
+                    class="register-btn"
+                >
+
+                    Get Started →
+
+                </a>
+
+
+                <a
+                    href="{{ url_for('login') }}"
+                    class="login-btn"
+                >
+
+                    Login
+
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- ==================================================
+             RIGHT FRIENDSHIP CARD
+        ================================================== -->
+
+        <div class="hero-illustration">
+
+
+            <div class="people-card">
+
+
+                <!-- People -->
+
+                <div class="people-icons">
+
+
+                    <!-- Person A -->
+
+                    <div class="person">
+
+                        A
+
+                    </div>
+
+
+                    <!-- Connection -->
+
+                    <div class="connection-line"></div>
+
+
+                    <!-- Friendship Symbol -->
+
+                    <div class="person friendship-symbol">
+
+                        🤝
+
+                    </div>
+
+
+                    <!-- Connection -->
+
+                    <div class="connection-line"></div>
+
+
+                    <!-- Person B -->
+
+                    <div class="person person-b">
+
+                        B
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- Title -->
+
+                <h2>
+
+                    Find Your People
+
+                </h2>
+
+
+
+                <!-- Description -->
+
+                <p>
+
+                    Meet interesting people, make genuine
+                    friendships, send friend requests,
+                    and start conversations.
+
+                </p>
+
+
+
+                <!-- Badge -->
+
+                <span class="connection-badge">
+
+                    ✨ Build Meaningful Connections
+
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         FEATURES
+    ================================================== -->
+
+    <section class="features">
+
+
+        <div class="section-title">
+
+
+            <span class="section-badge">
+
+                ✨ Everything You Need
+
+            </span>
+
+
+            <h2>
+
+                Connect. Make Friends. Chat.
+
+            </h2>
+
+
+            <p>
+
+                Simple and beautiful tools to help you
+                connect with people.
+
+            </p>
+
+
+        </div>
+
+
+
+        <div class="feature-grid">
+
+
+
+            <!-- ==================================================
+                 FEATURE 1
+            ================================================== -->
+
+            <div class="feature-card">
+
+
+                <div class="feature-icon">
+
+                    🔍
+
+                </div>
+
+
+                <h3>
+
+                    Find People
+
+                </h3>
+
+
+                <p>
+
+                    Search for people by name, city,
+                    or interests and discover new
+                    connections.
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- ==================================================
+                 FEATURE 2
+            ================================================== -->
+
+            <div class="feature-card">
+
+
+                <div class="feature-icon">
+
+                    🤝
+
+                </div>
+
+
+                <h3>
+
+                    Make Friends
+
+                </h3>
+
+
+                <p>
+
+                    Send and accept friend requests
+                    to build your own network.
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- ==================================================
+                 FEATURE 3
+            ================================================== -->
+
+            <div class="feature-card">
+
+
+                <div class="feature-icon">
+
+                    💬
+
+                </div>
+
+
+                <h3>
+
+                    Chat
+
+                </h3>
+
+
+                <p>
+
+                    Talk privately with your friends
+                    through the built-in chat system.
+
+                </p>
+
+
+            </div>
+
+
+
+            <!-- ==================================================
+                 FEATURE 4
+            ================================================== -->
+
+            <div class="feature-card">
+
+
+                <div class="feature-icon">
+
+                    👤
+
+                </div>
+
+
+                <h3>
+
+                    Your Profile
+
+                </h3>
+
+
+                <p>
+
+                    Create your profile with your interests,
+                    city, bio, and profile photo.
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ==================================================
+         CTA
+    ================================================== -->
+
+    <section class="cta">
+
+
+        <div class="cta-content">
+
+
+            <h2>
+
+                Ready to Make New Friends? 💜
+
+            </h2>
+
+
+            <p>
+
+                Create your account and start connecting
+                with amazing people today.
+
+            </p>
+
+
+            <a
+                href="{{ url_for('register') }}"
+            >
+
+                Create Account →
+
+            </a>
+
+
+        </div>
+
+
+    </section>
+
+
+
+</div>
+
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<footer>
+
+    <p>
+
+        © 2026 Friendship Website.
+        All rights reserved.
+
+    </p>
+
+</footer>
+
+
+
+<!-- ==================================================
+     JAVASCRIPT
+================================================== -->
+
+<script
+    src="{{ url_for('static', filename='js/script.js') }}">
+</script>
+
+
+</body>
+
+</html>

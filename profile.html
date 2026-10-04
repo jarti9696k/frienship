@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{{ user.name }} | Profile</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        body {
+            background: #f5f7fb;
+        }
+
+        .profile-page {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+        }
+
+        .profile-cover {
+            height: 180px;
+            background: linear-gradient(
+                135deg,
+                #4f46e5,
+                #6366f1,
+                #818cf8
+            );
+        }
+
+        .profile-content {
+            padding: 0 40px 40px;
+        }
+
+        .profile-photo-wrapper {
+            margin-top: -65px;
+            margin-bottom: 15px;
+        }
+
+        .profile-photo {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid white;
+            background: #4f46e5;
+        }
+
+        .profile-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 6px solid white;
+            background: #4f46e5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            font-weight: bold;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .profile-actions a {
+            text-decoration: none;
+            padding: 10px 17px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .edit-btn {
+            background: #4f46e5;
+            color: white !important;
+        }
+
+        .edit-btn:hover {
+            background: #4338ca;
+        }
+
+        .back-btn {
+            background: #eef2ff;
+            color: #4f46e5 !important;
+        }
+
+        .profile-details {
+            border-top: 1px solid #eee;
+            padding-top: 25px;
+        }
+
+        .profile-details h2 {
+            margin-bottom: 20px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .detail-box {
+            background: #f8fafc;
+            padding: 17px;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            display: block;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #222;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .bio-section {
+            margin-top: 25px;
+        }
+
+        .bio-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .bio-text {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 10px;
+            color: #555;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .interests-section {
+            margin-top: 25px;
+        }
+
+        .interest-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .interest-tag {
+            background: #eef2ff;
+            color: #4f46e5;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .friend-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .friend-btn-large {
+            display: inline-block;
+            background: #4f46e5;
+            color: white !important;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .friend-btn-large:hover {
+            background: #4338ca;
+        }
+
+        .chat-btn-large {
+            display: inline-block;
+            background: #16a34a;
+            color: white !important;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        .chat-btn-large:hover {
+            background: #15803d;
+        }
+
+        .empty-value {
+            color: #aaa;
+        }
+
+        @media (max-width: 600px) {
+
+            .profile-page {
+                margin: 20px auto;
+                padding: 0 10px;
+            }
+
+            .profile-cover {
+                height: 140px;
+            }
+
+            .profile-content {
+                padding: 0 20px 30px;
+            }
+
+            .profile-photo,
+            .profile-avatar {
+                width: 110px;
+                height: 110px;
+            }
+
+            .profile-avatar {
+                font-size: 40px;
+            }
+
+            .profile-name {
+                font-size: 26px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chat-btn-large {
+                margin-left: 0;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <h2>Friendship</h2>
+
+    <div>
+
+        <a href="{{ url_for('dashboard') }}">
+            Dashboard
+        </a>
+
+        <a href="{{ url_for('friends') }}">
+            Friends
+        </a>
+
+        <a href="{{ url_for('requests') }}">
+            Requests
+        </a>
+
+        <a href="{{ url_for('profile', user_id=session['user_id']) }}">
+            Profile
+        </a>
+
+        <a href="{{ url_for('logout') }}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ================= PROFILE ================= -->
+
+<div class="profile-page">
+
+    <div class="profile-card">
+
+        <!-- Cover -->
+
+        <div class="profile-cover"></div>
+
+
+        <div class="profile-content">
+
+            <!-- Profile Photo -->
+
+            <div class="profile-photo-wrapper">
+
+                {% if user.profile_photo %}
+
+                    <img
+                        src="{{ url_for(
+                            'static',
+                            filename='uploads/' + user.profile_photo
+                        ) }}"
+                        alt="{{ user.name }}"
+                        class="profile-photo"
+                    >
+
+                {% else %}
+
+                    <div class="profile-avatar">
+                        {{ user.name[0]|upper }}
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Name -->
+
+            <h1 class="profile-name">
+                {{ user.name }}
+            </h1>
+
+
+            <!-- Email -->
+
+            {% if user.email %}
+
+                <p class="profile-email">
+                    {{ user.email }}
+                </p>
+
+            {% endif %}
+
+
+            <!-- Actions -->
+
+            <div class="profile-actions">
+
+                {% if user.id == session['user_id'] %}
+
+                    <a
+                        href="{{ url_for('edit_profile') }}"
+                        class="edit-btn"
+                    >
+                        ✏️ Edit Profile
+                    </a>
+
+                {% else %}
+
+                    <a
+                        href="{{ url_for('add_friend', user_id=user.id) }}"
+                        class="edit-btn"
+                    >
+                        🤝 Add Friend
+                    </a>
+
+                {% endif %}
+
+
+                <a
+                    href="{{ url_for('dashboard') }}"
+                    class="back-btn"
+                >
+                    ← Dashboard
+                </a>
+
+            </div>
+
+
+            <!-- ================= DETAILS ================= -->
+
+            <div class="profile-details">
+
+                <h2>
+                    About {{ user.name }}
+                </h2>
+
+
+                <div class="details-grid">
+
+
+                    <!-- Age -->
+
+                    <div class="detail-box">
+
+                        <span class="detail-label">
+                            Age
+                        </span>
+
+                        {% if user.age %}
+
+                            <span class="detail-value">
+                                🎂 {{ user.age }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="detail-value empty-value">
+                                Not provided
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Gender -->
+
+                    <div class="detail-box">
+
+                        <span class="detail-label">
+                            Gender
+                        </span>
+
+                        {% if user.gender %}
+
+                            <span class="detail-value">
+                                👤 {{ user.gender }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="detail-value empty-value">
+                                Not provided
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- City -->
+
+                    <div class="detail-box">
+
+                        <span class="detail-label">
+                            City
+                        </span>
+
+                        {% if user.city %}
+
+                            <span class="detail-value">
+                                📍 {{ user.city }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="detail-value empty-value">
+                                Not provided
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- Email -->
+
+                    <div class="detail-box">
+
+                        <span class="detail-label">
+                            Email
+                        </span>
+
+                        {% if user.email %}
+
+                            <span class="detail-value">
+                                ✉️ {{ user.email }}
+                            </span>
+
+                        {% else %}
+
+                            <span class="detail-value empty-value">
+                                Not provided
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= BIO ================= -->
+
+                <div class="bio-section">
+
+                    <h3>
+                        About Me
+                    </h3>
+
+                    {% if user.bio %}
+
+                        <div class="bio-text">
+                            {{ user.bio }}
+                        </div>
+
+                    {% else %}
+
+                        <div class="bio-text empty-value">
+                            No bio added yet.
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- ================= INTERESTS ================= -->
+
+                <div class="interests-section">
+
+                    <h3>
+                        Interests ❤️
+                    </h3>
+
+
+                    {% if user.interests %}
+
+                        <div class="interest-list">
+
+                            {% for interest in user.interests.split(',') %}
+
+                                {% if interest.strip() %}
+
+                                    <span class="interest-tag">
+                                        {{ interest.strip() }}
+                                    </span>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="empty-value">
+                            No interests added yet.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- ================= OTHER USER ACTION ================= -->
+
+                {% if user.id != session['user_id'] %}
+
+                    <div class="friend-section">
+
+                        <a
+                            href="{{ url_for(
+                                'add_friend',
+                                user_id=user.id
+                            ) }}"
+                            class="friend-btn-large"
+                        >
+                            🤝 Send Friend Request
+                        </a>
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+</html>

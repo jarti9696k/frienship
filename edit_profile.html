@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Profile | Friendship</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .edit-container {
+            width: 550px;
+            max-width: 92%;
+            margin: 40px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.10);
+        }
+
+        .edit-container h1 {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .edit-subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .profile-photo-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .profile-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #eef2ff;
+            margin-bottom: 15px;
+        }
+
+        .default-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #4f46e5;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 45px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+
+        .photo-label {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #eef2ff;
+            color: #4f46e5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .photo-label:hover {
+            background: #e0e7ff;
+        }
+
+        #profile_photo {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: Arial, sans-serif;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #4f46e5;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .save-btn {
+            flex: 1;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            flex: 1;
+            background: #eee;
+            color: #333 !important;
+            padding: 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .save-btn:hover {
+            background: #4338ca;
+        }
+
+        .cancel-btn:hover {
+            background: #ddd;
+        }
+
+        .help-text {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .edit-container {
+                padding: 25px 20px;
+                margin: 25px auto;
+            }
+
+            .form-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+    <h2>Friendship</h2>
+
+    <div>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+
+        <a href="{{ url_for('friends') }}">Friends</a>
+
+        <a href="{{ url_for('requests') }}">Requests</a>
+
+        <a href="{{ url_for('profile', user_id=session['user_id']) }}">
+            Profile
+        </a>
+
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+</nav>
+
+
+<!-- ================= EDIT PROFILE ================= -->
+
+<div class="edit-container">
+
+    <h1>Edit Profile</h1>
+
+    <p class="edit-subtitle">
+        Update your information and profile photo
+    </p>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('edit_profile') }}"
+        enctype="multipart/form-data"
+    >
+
+        <!-- Profile Photo -->
+
+        <div class="profile-photo-section">
+
+            {% if user.profile_photo %}
+
+                <img
+                    id="photoPreview"
+                    class="profile-preview"
+                    src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}"
+                    alt="Profile Photo"
+                >
+
+            {% else %}
+
+                <div
+                    id="defaultAvatar"
+                    class="default-avatar"
+                >
+                    {{ user.name[0]|upper }}
+                </div>
+
+                <img
+                    id="photoPreview"
+                    class="profile-preview"
+                    style="display:none;"
+                    src=""
+                    alt="Profile Preview"
+                >
+
+            {% endif %}
+
+
+            <br>
+
+            <label
+                for="profile_photo"
+                class="photo-label"
+            >
+                📷 Change Photo
+            </label>
+
+            <input
+                type="file"
+                id="profile_photo"
+                name="profile_photo"
+                accept=".jpg,.jpeg,.png,.gif,.webp"
+            >
+
+            <div class="help-text">
+                JPG, PNG, GIF or WEBP — maximum 5 MB
+            </div>
+
+        </div>
+
+
+        <!-- Name -->
+
+        <div class="form-group">
+
+            <label for="name">
+                Full Name
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{ user.name or '' }}"
+                placeholder="Enter your name"
+                maxlength="100"
+                required
+            >
+
+        </div>
+
+
+        <!-- Age -->
+
+        <div class="form-group">
+
+            <label for="age">
+                Age
+            </label>
+
+            <input
+                type="number"
+                id="age"
+                name="age"
+                value="{{ user.age or '' }}"
+                placeholder="Enter your age"
+                min="13"
+                max="100"
+            >
+
+        </div>
+
+
+        <!-- Gender -->
+
+        <div class="form-group">
+
+            <label for="gender">
+                Gender
+            </label>
+
+            <select id="gender" name="gender">
+
+                <option value="">
+                    Select Gender
+                </option>
+
+                <option
+                    value="Male"
+                    {% if user.gender == 'Male' %}selected{% endif %}
+                >
+                    Male
+                </option>
+
+                <option
+                    value="Female"
+                    {% if user.gender == 'Female' %}selected{% endif %}
+                >
+                    Female
+                </option>
+
+                <option
+                    value="Other"
+                    {% if user.gender == 'Other' %}selected{% endif %}
+                >
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- City -->
+
+        <div class="form-group">
+
+            <label for="city">
+                City
+            </label>
+
+            <input
+                type="text"
+                id="city"
+                name="city"
+                value="{{ user.city or '' }}"
+                placeholder="Enter your city"
+                maxlength="100"
+            >
+
+        </div>
+
+
+        <!-- Interests -->
+
+        <div class="form-group">
+
+            <label for="interests">
+                Interests
+            </label>
+
+            <input
+                type="text"
+                id="interests"
+                name="interests"
+                value="{{ user.interests or '' }}"
+                placeholder="e.g. Music, Sports, Movies, Coding"
+                maxlength="500"
+            >
+
+        </div>
+
+
+        <!-- Bio -->
+
+        <div class="form-group">
+
+            <label for="bio">
+                About Me
+            </label>
+
+            <textarea
+                id="bio"
+                name="bio"
+                placeholder="Tell people something about yourself..."
+                maxlength="1000"
+            >{{ user.bio or '' }}</textarea>
+
+        </div>
+
+
+        <!-- Buttons -->
+
+        <div class="form-buttons">
+
+            <button
+                type="submit"
+                class="save-btn"
+            >
+                Save Changes
+            </button>
+
+            <a
+                href="{{ url_for('profile', user_id=session['user_id']) }}"
+                class="cancel-btn"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+<script>
+
+    const photoInput = document.getElementById("profile_photo");
+    const photoPreview = document.getElementById("photoPreview");
+    const defaultAvatar = document.getElementById("defaultAvatar");
+
+    if (photoInput) {
+
+        photoInput.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/gif",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+
+                alert(
+                    "Please select a JPG, PNG, GIF or WEBP image."
+                );
+
+                this.value = "";
+                return;
+            }
+
+
+            if (file.size > 5 * 1024 * 1024) {
+
+                alert(
+                    "Image size must be less than 5 MB."
+                );
+
+                this.value = "";
+                return;
+            }
+
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                photoPreview.src = event.target.result;
+
+                photoPreview.style.display = "inline-block";
+
+                if (defaultAvatar) {
+                    defaultAvatar.style.display = "none";
+                }
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+    }
+
+</script>
+
+</body>
+</html>
